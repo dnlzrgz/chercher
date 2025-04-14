@@ -1,13 +1,11 @@
 from typing import Generator
-from collections import namedtuple
 import pluggy
+from chercher.models import Document
 
 HOOK_NAMESPACE = "chercher"
 
 hook_spec = pluggy.HookspecMarker(HOOK_NAMESPACE)
 hook_impl = pluggy.HookimplMarker(HOOK_NAMESPACE)
-
-Document = namedtuple("Document", ["uri", "content", "details"])
 
 
 class IngestSpec:

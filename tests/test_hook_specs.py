@@ -1,8 +1,9 @@
 from typing import Generator
 from faker import Faker
 import pytest
-from src.chercher import Document, hook_impl
+from src.chercher import hook_impl
 from src.chercher.hookspecs import get_plugin_manager
+from src.chercher.models import Document
 
 fake = Faker()
 
@@ -10,14 +11,14 @@ fake = Faker()
 class SingleIngestPlugin:
     @hook_impl
     def ingest(self, uri: str) -> Generator[Document, None, None]:
-        yield Document(uri=uri, content="", details={})
+        yield Document(uri=uri, content="", metadata={})
 
 
 class MultipleIngestPlugin:
     @hook_impl
     def ingest(self, uri: str) -> Generator[Document, None, None]:
         for i in range(3):
-            yield Document(uri=uri, content=f"{i + 1}", details={})
+            yield Document(uri=uri, content=f"{i + 1}", metadata={})
 
 
 class ErrorRaisingIngestPlugin:
