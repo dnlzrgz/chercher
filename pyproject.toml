@@ -1,12 +1,17 @@
 [project]
 name = "chercher"
-version = "0.1.0"
+version = "0.1.1"
 description = "Universal and personal search engine."
 authors = [{ name = "dnlzrgz", email = "contact@dnlzrgz.com" }]
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.13"
-dependencies = ["click>=8.1.8", "pluggy>=1.5.0", "rich>=14.0.0"]
+dependencies = [
+  "chercher-plugin-txt",
+  "click>=8.1.8",
+  "pluggy>=1.5.0",
+  "rich>=14.0.0",
+]
 
 [project.urls]
 homepage = "https://dnlzrgz.com/projects/chercher/"
@@ -14,16 +19,17 @@ source = "https://github.com/dnlzrgz/chercher"
 issues = "https://github.com/dnlzrgz/chercher/issues"
 releases = "https://github.com/dnlzrgz/chercher/releases"
 
-[project.optional-dependencies]
-test = []
-
 [dependency-groups]
 dev = [
-    "commitizen>=4.5.1",
- "pre-commit>=4.2.0",
- "pytest>=8.3.5",
- "ruff>=0.11.4",
+  "commitizen>=4.5.1",
+  "faker>=37.1.0",
+  "pre-commit>=4.2.0",
+  "pytest>=8.3.5",
+  "ruff>=0.11.4",
 ]
+
+[project.scripts]
+chercher = "chercher:cli.cli"
 
 [build-system]
 requires = ["hatchling"]

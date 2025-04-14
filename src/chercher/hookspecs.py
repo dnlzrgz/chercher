@@ -1,3 +1,4 @@
+from typing import Generator
 from collections import namedtuple
 import pluggy
 
@@ -15,5 +16,13 @@ class IngestSpec:
     """
 
     @hook_spec(firstresult=True)
-    def ingest(self, uri: str) -> Document | list[Document] | None:
-        pass
+    def ingest(self, uri: str) -> Generator[Document, None, None]:
+        raise NotImplementedError
+
+
+def get_plugin_manager() -> pluggy.PluginManager:
+    pm = pluggy.PluginManager(HOOK_NAMESPACE)
+    pm.add_hookspecs(IngestSpec)
+    pm.load_setuptools_entrypoints(HOOK_NAMESPACE)
+
+    return pm
