@@ -1,10 +1,10 @@
-from .hookspecs import HOOK_NAMESPACE, hook_impl, IngestSpec
+from .hookspecs import hookimpl
+from . import hookspecs
 from .models import Document
 
 
 __all__ = [
-    "HOOK_NAMESPACE",
-    "hook_impl",
-    "IngestSpec",
+    "hookspecs",
+    "hookimpl",
     "Document",
 ]
