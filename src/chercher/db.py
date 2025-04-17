@@ -2,8 +2,7 @@ import sqlite3
 from contextlib import contextmanager
 
 
-def init_db(sqlite_url: str) -> None:
-    conn = sqlite3.connect(sqlite_url)
+def init_db(conn: sqlite3.Connection) -> None:
     cursor = conn.cursor()
 
     # Create the documents table.
@@ -42,12 +41,12 @@ def init_db(sqlite_url: str) -> None:
     cursor.execute("PRAGMA auto_vacuum = FULL;")
 
     conn.commit()
-    conn.close()
 
 
 @contextmanager
-def with_db(sqlite_url: str):
-    conn = sqlite3.connect(sqlite_url)
+def db_connection(db_url: str):
+    conn = sqlite3.connect(db_url)
+
     try:
         yield conn
         conn.commit()

@@ -2,7 +2,7 @@ import sqlite3
 import click
 from pluggy import PluginManager
 from chercher import hookspecs
-from chercher.db import init_db, with_db
+from chercher.db import init_db, db_connection
 
 
 def get_plugin_manager() -> PluginManager:
@@ -15,7 +15,9 @@ def get_plugin_manager() -> PluginManager:
 
 class Context(object):
     def __init__(self) -> None:
-        init_db("./db.sqlite3")
+        self.db_url = "./db.sqlite3"
+        with db_connection(self.db_url) as conn:
+            init_db(conn)
 
         self.pm = get_plugin_manager()
 
@@ -34,7 +36,7 @@ def index(ctx: Context, uris: list[str]) -> None:
         click.echo("No plugins registered!")
         return
 
-    with with_db("./db.sqlite3") as conn:
+    with db_connection(ctx.db_url) as conn:
         cursor = conn.cursor()
 
         for uri in uris:
