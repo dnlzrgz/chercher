@@ -11,3 +11,6 @@ wheels/
 
 # SQLite
 *.sqlite3
+
+# Logs
+*.log
