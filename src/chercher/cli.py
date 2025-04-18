@@ -1,8 +1,24 @@
+import sys
 import sqlite3
 import click
 from pluggy import PluginManager
+from loguru import logger
 from chercher import hookspecs
 from chercher.db import init_db, db_connection
+
+logger.remove()
+logger.add(
+    sys.stderr,
+    colorize=True,
+    format="<green>{time:YYYY-MM-DD at HH:mm:ss}</green> | <level>{level}</level> | {message}",
+    level="INFO",
+)
+logger.add(
+    "./app.log",
+    rotation="10 MB",
+    retention="10 days",
+    level="ERROR",
+)
 
 
 def get_plugin_manager() -> PluginManager:
@@ -33,7 +49,7 @@ def cli(ctx) -> None:
 @click.pass_obj
 def index(ctx: Context, uris: list[str]) -> None:
     if not ctx.pm.list_name_plugin():
-        click.echo("No plugins registered!")
+        logger.warning("No plugins registered!")
         return
 
     with db_connection(ctx.db_url) as conn:
@@ -47,13 +63,13 @@ def index(ctx: Context, uris: list[str]) -> None:
                             """
                     INSERT INTO documents (uri, body, metadata) VALUES (?, ?, ?)
                     """,
-                            (doc.uri, doc.body, "{}"),
+                            (doc.uri, doc.body, doc.metadata),
                         )
-                        click.echo(f'Document "{uri}" indexed')
+                        logger.info(f'document "{uri}" indexed')
                     except sqlite3.IntegrityError:
-                        click.echo(f"Document with URI {uri} already exists.")
+                        logger.warning(f'document "{uri}" already exists')
                     except Exception as e:
-                        click.echo(f"An error occurred: {e}")
+                        logger.error(f"an error occurred: {e}")
 
         conn.commit()
 
