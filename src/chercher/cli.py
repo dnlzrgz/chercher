@@ -12,7 +12,7 @@ logger.remove()
 logger.add(
     sys.stderr,
     colorize=True,
-    format="<green>{time:YYYY-MM-DD at HH:mm:ss}</green> | <level>{level}</level> | {message}",
+    format="<green>{time:HH:mm:ss}</green> | <level>{level}</level> | {message}",
     level="INFO",
 )
 logger.add(
@@ -53,7 +53,7 @@ def index(ctx: click.Context, uris: list[str]) -> None:
         cursor = conn.cursor()
 
         for uri in uris:
-            for documents in pm.hook.ingest(uri=uri):
+            for documents in pm.hook.ingest(uri=uri, settings=dict(settings)):
                 for doc in documents:
                     try:
                         cursor.execute(
@@ -62,13 +62,12 @@ def index(ctx: click.Context, uris: list[str]) -> None:
                     """,
                             (doc.uri, doc.body, "{}"),
                         )
+                        conn.commit()
                         logger.info(f'document "{uri}" indexed')
                     except sqlite3.IntegrityError:
                         logger.warning(f'document "{uri}" already exists')
                     except Exception as e:
                         logger.error(f"an error occurred: {e}")
-
-        conn.commit()
 
 
 @cli.command()
@@ -103,7 +102,7 @@ def search(ctx: click.Context, query: str, limit: int) -> None:
         results = cursor.fetchall()
 
         for result in results:
-            pprint(f"[underline]{result[0]}[/]")
+            pprint(f"[link={result[0]}]{result[0]}[/]")
             print(f"{textwrap.shorten(result[1], width=280, placeholder='...')}\n")
 
 

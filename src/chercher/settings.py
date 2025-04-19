@@ -23,6 +23,7 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(
         toml_file=CONFIG_FILE_PATH,
+        extra="allow",
     )
 
     @classmethod
