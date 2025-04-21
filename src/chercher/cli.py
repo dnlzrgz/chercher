@@ -6,7 +6,7 @@ from loguru import logger
 from rich.console import Console
 from rich.table import Table
 from chercher.plugin_manager import get_plugin_manager
-from chercher.settings import Settings, APP_DIR
+from chercher.settings import Settings, APP_NAME, APP_DIR
 from chercher.db import init_db, db_connection
 
 console = Console()
@@ -28,7 +28,12 @@ logger.add(
 settings = Settings()
 
 
-@click.group()
+@click.group(help=settings.description)
+@click.version_option(
+    version=settings.version,
+    message="v%(version)s",
+    package_name=APP_NAME,
+)
 @click.pass_context
 def cli(ctx: click.Context) -> None:
     with db_connection(settings.db_url) as conn:
@@ -41,7 +46,7 @@ def cli(ctx: click.Context) -> None:
     ctx.obj["pm"] = get_plugin_manager()
 
 
-@cli.command()
+@cli.command(help="Index documents, webpages and more.")
 @click.argument("uris", nargs=-1)
 @click.pass_context
 def index(ctx: click.Context, uris: list[str]) -> None:
@@ -73,7 +78,7 @@ def index(ctx: click.Context, uris: list[str]) -> None:
                         logger.error(f"an error occurred: {e}")
 
 
-@cli.command()
+@cli.command(help="Seach for documents matching your query.")
 @click.argument("query")
 @click.option(
     "-l",
@@ -116,7 +121,7 @@ def search(ctx: click.Context, query: str, limit: int) -> None:
             )
 
 
-@cli.command()
+@cli.command(help="List out all the registered plugins and their hooks.")
 @click.pass_context
 def plugins(ctx: click.Context) -> None:
     pm = ctx.obj["pm"]

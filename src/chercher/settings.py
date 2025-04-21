@@ -16,7 +16,7 @@ CONFIG_FILE_PATH = APP_DIR / "config.toml"
 
 class Settings(BaseSettings):
     name: str = APP_NAME
-    description: str = "An universal and personal search engine."
+    description: str = "Chercher, the universal and personal search engine."
     version: str = version(APP_NAME)
 
     db_url: str = f"{APP_DIR}/db.sqlite3"
