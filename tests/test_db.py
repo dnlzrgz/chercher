@@ -40,3 +40,7 @@ def test_document_insertion(mock_db):
     cursor.execute("SELECT * FROM documents WHERE uri = ?", (uri,))
     document = cursor.fetchone()
     assert document[0] == uri
+
+    cursor.execute("SELECT * FROM documents_fts WHERE uri = ?", (uri,))
+    document = cursor.fetchone()
+    assert document[0] == uri

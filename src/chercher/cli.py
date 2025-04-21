@@ -3,10 +3,13 @@ import sqlite3
 import textwrap
 import click
 from loguru import logger
-from rich import print as pprint
+from rich.console import Console
+from rich.table import Table
 from chercher.plugin_manager import get_plugin_manager
 from chercher.settings import Settings, APP_DIR
 from chercher.db import init_db, db_connection
+
+console = Console()
 
 logger.remove()
 logger.add(
@@ -29,7 +32,7 @@ settings = Settings()
 @click.pass_context
 def cli(ctx: click.Context) -> None:
     with db_connection(settings.db_url) as conn:
-        logger.info("initializing the database")
+        logger.debug("initializing the database")
         init_db(conn)
 
     ctx.ensure_object(dict)
@@ -101,13 +104,31 @@ def search(ctx: click.Context, query: str, limit: int) -> None:
         cursor.execute(sql_query, (query, limit))
         results = cursor.fetchall()
 
+        if not results:
+            console.print(f"No results found for: '{query}'")
+            return
+
         for result in results:
-            pprint(f"[link={result[0]}]{result[0]}[/]")
-            print(f"{textwrap.shorten(result[1], width=280, placeholder='...')}\n")
+            console.print(f"[link={result[0]}]{result[0]}[/]")
+            console.print(
+                f"{textwrap.shorten(result[1], width=280, placeholder='...')}\n",
+                highlight=False,
+            )
 
 
 @cli.command()
 @click.pass_context
 def plugins(ctx: click.Context) -> None:
     pm = ctx.obj["pm"]
-    print(pm.list_name_plugin())
+    plugins = dict(pm.list_plugin_distinfo())
+
+    table = Table(title="plugins")
+    table.add_column("name")
+    table.add_column("hooks")
+
+    for plugin in plugins:
+        hooks = [h.name for h in pm.get_hookcallers(plugin)]
+        hooks_str = ", ".join(hooks)
+        table.add_row(plugin.__name__, hooks_str)
+
+    console.print(table)
