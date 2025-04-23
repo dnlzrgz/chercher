@@ -34,9 +34,9 @@ def test_index_with_exception(test_db, plugin_manager):
     plugin_manager.register(DummyTxtPlugin())
     plugin_manager.register(BadPlugin())
     uris = [
-        fake.file_path(depth=3),
+        fake.file_path(depth=3, extension="pdf"),
         fake.file_path(depth=3, extension="txt"),
-        fake.file_path(depth=3),
+        fake.file_path(depth=3, extension="epub"),
     ]
 
     _index(test_db, uris, plugin_manager)

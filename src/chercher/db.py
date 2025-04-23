@@ -10,7 +10,11 @@ def init_db(conn: sqlite3.Connection) -> None:
     CREATE TABLE IF NOT EXISTS documents (
         uri TEXT PRIMARY KEY,
         body TEXT NOT NULL,
-        metadata TEXT
+        hash TEXT,
+        metadata TEXT,
+
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        last_updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
     );
     """)
 
