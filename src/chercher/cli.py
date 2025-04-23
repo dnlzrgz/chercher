@@ -3,6 +3,7 @@ import sqlite3
 import textwrap
 import click
 from loguru import logger
+import pluggy
 from rich.console import Console
 from rich.table import Table
 from chercher.plugin_manager import get_plugin_manager
@@ -46,21 +47,11 @@ def cli(ctx: click.Context) -> None:
     ctx.obj["pm"] = get_plugin_manager()
 
 
-@cli.command(help="Index documents, webpages and more.")
-@click.argument("uris", nargs=-1)
-@click.pass_context
-def index(ctx: click.Context, uris: list[str]) -> None:
-    pm = ctx.obj["pm"]
-    db_url = ctx.obj["db_url"]
+def _index(conn: sqlite3.Connection, uris: list[str], pm: pluggy.PluginManager) -> None:
+    cursor = conn.cursor()
 
-    if not pm.list_name_plugin():
-        logger.warning("No plugins registered!")
-        return
-
-    with db_connection(db_url) as conn:
-        cursor = conn.cursor()
-
-        for uri in uris:
+    for uri in uris:
+        try:
             for documents in pm.hook.ingest(uri=uri, settings=dict(settings)):
                 for doc in documents:
                     try:
@@ -75,7 +66,26 @@ def index(ctx: click.Context, uris: list[str]) -> None:
                     except sqlite3.IntegrityError:
                         logger.warning(f'document "{uri}" already exists')
                     except Exception as e:
-                        logger.error(f"an error occurred: {e}")
+                        logger.error(
+                            f"something went wrong while indexing '{uri}': {e}"
+                        )
+        except Exception as e:
+            logger.error(f"something went wrong while trying to index documents: {e}")
+
+
+@cli.command(help="Index documents, webpages and more.")
+@click.argument("uris", nargs=-1)
+@click.pass_context
+def index(ctx: click.Context, uris: list[str]) -> None:
+    pm = ctx.obj["pm"]
+    db_url = ctx.obj["db_url"]
+
+    if not pm.list_name_plugin():
+        logger.warning("No plugins registered!")
+        return
+
+    with db_connection(db_url) as conn:
+        _index(conn, uris, pm)
 
 
 @cli.command(help="Seach for documents matching your query.")
