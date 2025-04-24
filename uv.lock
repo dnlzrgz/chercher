@@ -53,13 +53,9 @@ wheels = [
 
 [[package]]
 name = "chercher"
-version = "0.1.14"
+version = "0.1.16"
 source = { editable = "." }
 dependencies = [
-    { name = "chercher-plugin-epub" },
-    { name = "chercher-plugin-md" },
-    { name = "chercher-plugin-pdf" },
-    { name = "chercher-plugin-txt" },
     { name = "click" },
     { name = "loguru" },
     { name = "pluggy" },
@@ -79,10 +75,6 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "chercher-plugin-epub", specifier = ">=0.1.0" },
-    { name = "chercher-plugin-md", specifier = ">=0.1.0" },
-    { name = "chercher-plugin-pdf", specifier = ">=0.1.0" },
-    { name = "chercher-plugin-txt", specifier = ">=0.1.0" },
     { name = "click", specifier = ">=8.1.8" },
     { name = "loguru", specifier = ">=0.7.3" },
     { name = "pluggy", specifier = ">=1.5.0" },
@@ -98,57 +90,6 @@ dev = [
     { name = "pre-commit", specifier = ">=4.2.0" },
     { name = "pytest", specifier = ">=8.3.5" },
     { name = "ruff", specifier = ">=0.11.4" },
-]
-
-[[package]]
-name = "chercher-plugin-epub"
-version = "0.1.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "chercher" },
-    { name = "pymupdf" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/71/bb/4b5019e948764df5bfcaab94da96b36ad0ce97c59675f7dcc0d297295cec/chercher_plugin_epub-0.1.1.tar.gz", hash = "sha256:bb34d7164784bbc31b32573657fc60766ca20c43429c27c6d8ec3b03bf353b2a", size = 2932, upload_time = "2025-04-23T14:06:25.396Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/6d/b1/fa27a0c9a3dd5fd0ce6dadbbf8992725df47dab31db23946f85f6195c642/chercher_plugin_epub-0.1.1-py3-none-any.whl", hash = "sha256:fb7fc35942319ff9486f4ed5635f9d3aadf7002c1c421f6eb7ac6ffc3565b84c", size = 3095, upload_time = "2025-04-23T14:06:24.126Z" },
-]
-
-[[package]]
-name = "chercher-plugin-md"
-version = "0.1.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "chercher" },
-    { name = "python-frontmatter" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/19/ae/5d50d410a0b7f6a320e77f2c67258cc12f65bfefa9fd75c792f2315f920f/chercher_plugin_md-0.1.1.tar.gz", hash = "sha256:e7f6ebd2c8cb67c5cc154a057a93170ea4e2555214b858df8e663763abd3ad22", size = 2809, upload_time = "2025-04-23T13:48:20.207Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/ca/cb/1733363b5db6046ee4785f7e0ce32fd8433bc0e6cebcd0a6560dd007d491/chercher_plugin_md-0.1.1-py3-none-any.whl", hash = "sha256:44c2f6845ef613d774801a9350bd6fea801e89bcd9d934fb717c6eb9af5f2564", size = 2999, upload_time = "2025-04-23T13:48:18.878Z" },
-]
-
-[[package]]
-name = "chercher-plugin-pdf"
-version = "0.1.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "chercher" },
-    { name = "pymupdf" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/16/cd/7a9623dc4390b0627fd20dd3fc25fefb1bbaa40a37b5f17222028c158cc5/chercher_plugin_pdf-0.1.0.tar.gz", hash = "sha256:9a5e87861c00e03222cc9ba90f3c696ee801f941d20f991db22c502072dfcc48", size = 2480, upload_time = "2025-04-19T18:20:53.902Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/21/3c/4887ec5fda4e994b13d16851440d7ffb2f81af32949c4252f359d08c09c3/chercher_plugin_pdf-0.1.0-py3-none-any.whl", hash = "sha256:7fb2e33ad3a5241b62d19ec958e3ba50bfa0805f1354cbfdcbff453ab8e36730", size = 2910, upload_time = "2025-04-19T18:20:52.383Z" },
-]
-
-[[package]]
-name = "chercher-plugin-txt"
-version = "0.1.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "chercher" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/aa/a0/5b3d1c49d0f93065854e8c6c7eaae736471134e0e788a54c46ed00eb63ef/chercher_plugin_txt-0.1.1.tar.gz", hash = "sha256:c22dc9ee07b63686f79c4320a43fe358c2993e4e960c78278395498bec5d2750", size = 2738, upload_time = "2025-04-23T08:41:58.305Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/bc/bf/da4f71e698d4c011481d4848b69c2315bff25b78dfcc419e96e7c897eee1/chercher_plugin_txt-0.1.1-py3-none-any.whl", hash = "sha256:cfae9f6fc091af53347a0d12075729f038379eaabc0a503ce4a669a55c5faa70", size = 2989, upload_time = "2025-04-23T08:41:56.972Z" },
 ]
 
 [[package]]
@@ -455,21 +396,6 @@ wheels = [
 ]
 
 [[package]]
-name = "pymupdf"
-version = "1.25.5"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/f9/af/3d5d363241b9a74470273cf1534436f13a0a61fc5ef6efd19e5afe9de812/pymupdf-1.25.5.tar.gz", hash = "sha256:5f96311cacd13254c905f6654a004a0a2025b71cabc04fda667f5472f72c15a0", size = 69812626, upload_time = "2025-03-31T23:22:13.891Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/85/5f/153d6c338291448e182648844849d13938a62a82a3e4a9b0907d9b381148/pymupdf-1.25.5-cp39-abi3-macosx_10_9_x86_64.whl", hash = "sha256:cde4e1c9cfb09c0e1e9c2b7f4b787dd6bb34a32cfe141a4675e24af7c0c25dd3", size = 19364722, upload_time = "2025-03-31T23:18:04.729Z" },
-    { url = "https://files.pythonhosted.org/packages/4e/55/43b64fa6cd048d2ea4574c045b5ac05d023254b91c2c703185f6f8a77b30/pymupdf-1.25.5-cp39-abi3-macosx_11_0_arm64.whl", hash = "sha256:5a35e2725fae0ab57f058dff77615c15eb5961eac50ba04f41ebc792cd8facad", size = 18606161, upload_time = "2025-03-31T23:18:28.707Z" },
-    { url = "https://files.pythonhosted.org/packages/8b/22/29edb3236aed2f99a7922699fd71183e2f6cdde3c3884670158ae4dcf3ea/pymupdf-1.25.5-cp39-abi3-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:d94b800e9501929c42283d39bc241001dd87fdeea297b5cb40d5b5714534452f", size = 19467121, upload_time = "2025-04-01T09:31:13.172Z" },
-    { url = "https://files.pythonhosted.org/packages/18/12/95e2ebe2933f94800fdeafd87bc281a790e1dc947b147c3d101df4f73703/pymupdf-1.25.5-cp39-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:ee22155d3a634642d76553204867d862ae1bdd9f7cf70c0797d8127ebee6bed5", size = 20030310, upload_time = "2025-03-31T23:19:03.607Z" },
-    { url = "https://files.pythonhosted.org/packages/bd/db/b4edec9e731ea7c2b74bf28b9091ed4e919d5c7f889ef86352b7fd416197/pymupdf-1.25.5-cp39-abi3-musllinux_1_2_x86_64.whl", hash = "sha256:6ed7fc25271004d6d3279c20a80cb2bb4cda3efa9f9088dcc07cd790eca0bc63", size = 21293562, upload_time = "2025-03-31T23:19:34.612Z" },
-    { url = "https://files.pythonhosted.org/packages/ec/47/682a8ddce650e09f5de6809c9bce926b2493a19b7f9537d80d4646989670/pymupdf-1.25.5-cp39-abi3-win32.whl", hash = "sha256:65e18ddb37fe8ec4edcdbebe9be3a8486b6a2f42609d0a142677e42f3a0614f8", size = 15110464, upload_time = "2025-03-31T23:20:02.136Z" },
-    { url = "https://files.pythonhosted.org/packages/71/c2/a9059607f80dcaf2392f991748cfc53456820392c0220cff02572653512a/pymupdf-1.25.5-cp39-abi3-win_amd64.whl", hash = "sha256:7f44bc3d03ea45b2f68c96464f96105e8c7908896f2fb5e8c04f1fb8dae7981e", size = 16579671, upload_time = "2025-03-31T23:20:25.793Z" },
-]
-
-[[package]]
 name = "pytest"
 version = "8.3.5"
 source = { registry = "https://pypi.org/simple" }
@@ -491,18 +417,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/88/2c/7bb1416c5620485aa793f2de31d3df393d3686aa8a8506d11e10e13c5baf/python_dotenv-1.1.0.tar.gz", hash = "sha256:41f90bc6f5f177fb41f53e87666db362025010eb28f60a01c9143bfa33a2b2d5", size = 39920, upload_time = "2025-03-25T10:14:56.835Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/1e/18/98a99ad95133c6a6e2005fe89faedf294a748bd5dc803008059409ac9b1e/python_dotenv-1.1.0-py3-none-any.whl", hash = "sha256:d7c01d9e2293916c18baf562d95698754b0dbbb5e74d457c45d4f6561fb9d55d", size = 20256, upload_time = "2025-03-25T10:14:55.034Z" },
-]
-
-[[package]]
-name = "python-frontmatter"
-version = "1.1.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "pyyaml" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/96/de/910fa208120314a12f9a88ea63e03707261692af782c99283f1a2c8a5e6f/python-frontmatter-1.1.0.tar.gz", hash = "sha256:7118d2bd56af9149625745c58c9b51fb67e8d1294a0c76796dafdc72c36e5f6d", size = 16256, upload_time = "2024-01-16T18:50:04.052Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/49/87/3c8da047b3ec5f99511d1b4d7a5bc72d4b98751c7e78492d14dc736319c5/python_frontmatter-1.1.0-py3-none-any.whl", hash = "sha256:335465556358d9d0e6c98bbeb69b1c969f2a4a21360587b9873bfc3b213407c1", size = 9834, upload_time = "2024-01-16T18:50:00.911Z" },
 ]
 
 [[package]]

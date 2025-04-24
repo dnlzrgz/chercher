@@ -57,20 +57,22 @@ def _index(conn: sqlite3.Connection, uris: list[str], pm: pluggy.PluginManager) 
                     try:
                         cursor.execute(
                             """
-                    INSERT INTO documents (uri, body, metadata) VALUES (?, ?, ?)
+                    INSERT INTO documents (uri, body, hash, metadata) VALUES (?, ?, ?, ?)
                     """,
-                            (doc.uri, doc.body, "{}"),
+                            (doc.uri, doc.body, doc.hash, "{}"),
                         )
                         conn.commit()
-                        logger.info(f'document "{uri}" indexed')
+                        logger.info(f'document "{doc.uri}" indexed')
                     except sqlite3.IntegrityError:
-                        logger.warning(f'document "{uri}" already exists')
+                        logger.warning(f'document "{doc.uri}" already exists')
                     except Exception as e:
                         logger.error(
-                            f"something went wrong while indexing '{uri}': {e}"
+                            f"something went wrong while indexing '{doc.uri}': {e}"
                         )
         except Exception as e:
-            logger.error(f"something went wrong while trying to index documents: {e}")
+            logger.error(
+                f"something went wrong while trying to index documents from '{uri}': {e}"
+            )
 
 
 @cli.command(help="Index documents, webpages and more.")
