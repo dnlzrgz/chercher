@@ -8,7 +8,7 @@ fake = Faker()
 class DummyPlugin:
     @hookimpl
     def ingest(self, uri: str) -> Generator[Document, None, None]:
-        yield Document(uri=uri, body="", metadata={})
+        yield Document(uri=uri, title="", body="", metadata={})
 
 
 def test_dummy_ingest_plugin(plugin_manager):

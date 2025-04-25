@@ -14,9 +14,8 @@ def plugin_manager():
 
 
 @pytest.fixture
-def test_db(tmp_path):
-    db_path = tmp_path / "chercher_test.db"
-    conn = sqlite3.connect(db_path)
+def test_db():
+    conn = sqlite3.connect(":memory:")
     init_db(conn)
 
     yield conn

@@ -9,6 +9,7 @@ def init_db(conn: sqlite3.Connection) -> None:
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS documents (
         uri TEXT PRIMARY KEY,
+        title TEXT,
         body TEXT NOT NULL,
         hash TEXT,
         metadata TEXT,
@@ -22,6 +23,7 @@ def init_db(conn: sqlite3.Connection) -> None:
     cursor.execute("""
     CREATE VIRTUAL TABLE IF NOT EXISTS documents_fts USING fts5 (
         uri,
+        title,
         body,
         content=documents,
         tokenize="porter unicode61 remove_diacritics 1"
@@ -31,7 +33,7 @@ def init_db(conn: sqlite3.Connection) -> None:
     # Create trigger to keep the FTS5 index up to date.
     cursor.execute("""
     CREATE TRIGGER IF NOT EXISTS documents_ai AFTER INSERT ON documents BEGIN
-        INSERT INTO documents_fts(rowid, uri, body) VALUES (new.rowid, new.uri, new.body);
+        INSERT INTO documents_fts(rowid, uri, title, body) VALUES (new.rowid, new.uri, new.title, new.body);
     END;
     """)
 

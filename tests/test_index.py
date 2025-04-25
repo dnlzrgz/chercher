@@ -17,7 +17,11 @@ class DummyTxtPlugin:
     @hookimpl
     def ingest(self, uri: str) -> Generator[Document, None, None]:
         if uri.endswith(".txt"):
-            yield Document(uri=uri, body="", metadata={})
+            yield Document(
+                uri=uri,
+                body=fake.sentence(),
+                metadata={},
+            )
 
 
 def test_index_valid_txt(test_db, plugin_manager):
@@ -27,7 +31,9 @@ def test_index_valid_txt(test_db, plugin_manager):
 
     cursor = test_db.cursor()
     cursor.execute("SELECT * FROM documents")
-    assert cursor.fetchone() is not None
+    documents = cursor.fetchall()
+    assert len(documents) == 1
+    assert documents[0][0] == uri
 
 
 def test_index_with_exception(test_db, plugin_manager):
