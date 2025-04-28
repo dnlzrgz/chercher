@@ -128,7 +128,7 @@ def search(ctx: click.Context, query: str, limit: int) -> None:
         for result in results:
             console.print(f"[link={result[0]}]{result[0]}[/]")
             console.print(
-                f"{textwrap.shorten(result[2], width=280, placeholder='...')}\n",
+                f"{textwrap.shorten(result[1], width=280, placeholder='...')}\n",
                 highlight=False,
             )
 
