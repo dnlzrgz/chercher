@@ -57,9 +57,9 @@ def _index(conn: sqlite3.Connection, uris: list[str], pm: pluggy.PluginManager) 
                     try:
                         cursor.execute(
                             """
-                    INSERT INTO documents (uri, body, hash, metadata) VALUES (?, ?, ?, ?)
+                    INSERT INTO documents (uri, title, body, hash, metadata) VALUES (?, ?, ?, ?, ?)
                     """,
-                            (doc.uri, doc.body, doc.hash, "{}"),
+                            (doc.uri, doc.title, doc.body, doc.hash, "{}"),
                         )
                         conn.commit()
                         logger.info(f'document "{doc.uri}" indexed')
@@ -128,7 +128,7 @@ def search(ctx: click.Context, query: str, limit: int) -> None:
         for result in results:
             console.print(f"[link={result[0]}]{result[0]}[/]")
             console.print(
-                f"{textwrap.shorten(result[1], width=280, placeholder='...')}\n",
+                f"{textwrap.shorten(result[2], width=280, placeholder='...')}\n",
                 highlight=False,
             )
 
@@ -141,11 +141,13 @@ def plugins(ctx: click.Context) -> None:
 
     table = Table(title="plugins")
     table.add_column("name")
+    table.add_column("version")
     table.add_column("hooks")
 
-    for plugin in plugins:
+    for plugin, dist_info in plugins.items():
+        version = f"v{dist_info.version}" if dist_info else "n/a"
         hooks = [h.name for h in pm.get_hookcallers(plugin)]
         hooks_str = ", ".join(hooks)
-        table.add_row(plugin.__name__, hooks_str)
+        table.add_row(plugin.__name__, version, hooks_str)
 
     console.print(table)

@@ -19,21 +19,27 @@ class DummyTxtPlugin:
         if uri.endswith(".txt"):
             yield Document(
                 uri=uri,
-                body=fake.sentence(),
+                title=" ".join(fake.words()),
+                body="\n".join(fake.sentences()),
+                hash=fake.sha256(),
                 metadata={},
             )
 
 
 def test_index_valid_txt(test_db, plugin_manager):
     plugin_manager.register(DummyTxtPlugin())
-    uri = fake.file_path(depth=3, extension="txt")
+    uri = fake.file_path(extension="txt")
     _index(test_db, [uri], plugin_manager)
 
     cursor = test_db.cursor()
     cursor.execute("SELECT * FROM documents")
     documents = cursor.fetchall()
+
     assert len(documents) == 1
     assert documents[0][0] == uri
+    assert documents[0][1] is not None
+    assert documents[0][2] is not None
+    assert documents[0][3] is not None
 
 
 def test_index_with_exception(test_db, plugin_manager):

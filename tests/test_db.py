@@ -3,27 +3,33 @@ from faker import Faker
 fake = Faker()
 
 
-def test_init_db(test_db):
+def test_init_db_creates_required_tables(test_db):
     cursor = test_db.cursor()
     cursor.execute(
         "SELECT name FROM sqlite_master WHERE type='table' AND name='documents';"
     )
-    assert cursor.fetchone() is not None
+    documents_table = cursor.fetchone()
+    assert documents_table is not None
+    assert documents_table[0] == "documents"
 
     cursor.execute(
         "SELECT name FROM sqlite_master WHERE type='table' AND name='documents_fts';"
     )
-    assert cursor.fetchone() is not None
+    documents_fts_table = cursor.fetchone()
+    assert documents_fts_table is not None
+    assert documents_fts_table[0] == "documents_fts"
 
 
-def test_document_insertion(test_db):
-    title = fake.name()
+def test_document_insertion_saves_correctly(test_db):
     uri = fake.file_path(depth=3)
+    title = " ".join(fake.words())
+    body = "\n".join(fake.sentences())
+    hash = fake.sha256()
 
     cursor = test_db.cursor()
     cursor.execute(
-        "INSERT INTO documents (uri, title, body, metadata) VALUES (?, ?, ?, ?)",
-        (uri, title, "", "{}"),
+        "INSERT INTO documents (uri, title, body, hash, metadata) VALUES (?, ?, ?, ?, ?)",
+        (uri, title, body, hash, "{}"),
     )
     test_db.commit()
 
@@ -31,7 +37,10 @@ def test_document_insertion(test_db):
     document = cursor.fetchone()
     assert document[0] == uri
     assert document[1] == title
+    assert document[2] == body
+    assert document[3] == hash
 
     cursor.execute("SELECT * FROM documents_fts WHERE uri = ?", (uri,))
     document = cursor.fetchone()
     assert document[0] == uri
+    assert document[1] == title
