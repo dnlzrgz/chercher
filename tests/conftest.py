@@ -1,8 +1,11 @@
 import sqlite3
 import pytest
+from faker import Faker
 from pluggy import PluginManager
 from src.chercher.db import init_db
 from src.chercher import hookspecs
+
+fake = Faker()
 
 
 @pytest.fixture

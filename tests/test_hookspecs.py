@@ -1,29 +1,20 @@
-from typing import Generator
-from faker import Faker
-from src.chercher import hookimpl, Document
-
-fake = Faker()
-
-expected_doc = Document(
-    uri=fake.file_path(depth=3),
-    title=" ".join(fake.words()),
-    body="\n".join(fake.sentences()),
-    hash=fake.sha256(),
-    metadata={},
-)
+from .plugin_mocks import DummyPlugin
 
 
-class DummyPlugin:
-    @hookimpl
-    def ingest(self, uri: str) -> Generator[Document, None, None]:
-        yield expected_doc
-
-
-def test_dummy_plugin_yields_correct_document(plugin_manager):
+def test_dummy_plugin_yields_document_correctly(faker, plugin_manager):
     plugin_manager.register(DummyPlugin())
-    for documents in plugin_manager.hook.ingest(uri=""):
-        for doc in documents:
-            assert doc.uri == expected_doc.uri
-            assert doc.title == expected_doc.title
-            assert doc.body == expected_doc.body
-            assert doc.hash == expected_doc.hash
+    uri = faker.file_path(extension="txt")
+    documents = [
+        document
+        for doc_gen in plugin_manager.hook.ingest(uri=uri)
+        for document in doc_gen
+    ]
+    assert len(documents) == 1
+    assert documents[0].uri == uri
+
+
+def test_dummy_plugin_yields_prune_result_correctly(faker, plugin_manager):
+    plugin_manager.register(DummyPlugin())
+    results = [result for result in plugin_manager.hook.prune(uri=faker.file_path())]
+    assert len(results) == 1
+    assert results[0]

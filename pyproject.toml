@@ -1,6 +1,6 @@
 [project]
 name = "chercher"
-version = "0.1.20"
+version = "0.1.21"
 description = "Universal and personal search engine."
 authors = [{ name = "dnlzrgz", email = "contact@dnlzrgz.com" }]
 readme = "README.md"

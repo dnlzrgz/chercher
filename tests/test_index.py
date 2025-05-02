@@ -1,34 +1,10 @@
-from typing import Generator
-from faker import Faker
 from src.chercher.cli import _index
-from src.chercher import hookimpl, Document
-
-fake = Faker()
+from .plugin_mocks import DummyTxtPlugin, BadPlugin
 
 
-class BadPlugin:
-    @hookimpl
-    def ingest(self, uri: str) -> Generator[Document, None, None]:
-        if not uri.endswith(".txt"):
-            raise Exception("Ooops!")
-
-
-class DummyTxtPlugin:
-    @hookimpl
-    def ingest(self, uri: str) -> Generator[Document, None, None]:
-        if uri.endswith(".txt"):
-            yield Document(
-                uri=uri,
-                title=" ".join(fake.words()),
-                body="\n".join(fake.sentences()),
-                hash=fake.sha256(),
-                metadata={},
-            )
-
-
-def test_index_valid_txt(test_db, plugin_manager):
+def test_index_valid_txt(faker, test_db, plugin_manager):
     plugin_manager.register(DummyTxtPlugin())
-    uri = fake.file_path(extension="txt")
+    uri = faker.file_path(extension="txt")
     _index(test_db, [uri], plugin_manager)
 
     cursor = test_db.cursor()
@@ -42,13 +18,13 @@ def test_index_valid_txt(test_db, plugin_manager):
     assert documents[0][3] is not None
 
 
-def test_index_with_exception(test_db, plugin_manager):
+def test_index_with_exception(faker, test_db, plugin_manager):
     plugin_manager.register(DummyTxtPlugin())
     plugin_manager.register(BadPlugin())
     uris = [
-        fake.file_path(depth=3, extension="pdf"),
-        fake.file_path(depth=3, extension="txt"),
-        fake.file_path(depth=3, extension="epub"),
+        faker.file_path(depth=3, extension="pdf"),
+        faker.file_path(depth=3, extension="txt"),
+        faker.file_path(depth=3, extension="epub"),
     ]
 
     _index(test_db, uris, plugin_manager)
@@ -60,9 +36,9 @@ def test_index_with_exception(test_db, plugin_manager):
     assert len(documents) == 1
 
 
-def test_index_same_document_multiple_times(test_db, plugin_manager):
+def test_index_same_document_multiple_times(faker, test_db, plugin_manager):
     plugin_manager.register(DummyTxtPlugin())
-    uri = fake.file_path(depth=3, extension="txt")
+    uri = faker.file_path(depth=3, extension="txt")
 
     _index(test_db, [uri, uri], plugin_manager)
 

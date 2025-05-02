@@ -30,9 +30,22 @@ def init_db(conn: sqlite3.Connection) -> None:
     );
     """)
 
-    # Create trigger to keep the FTS5 index up to date.
+    # Create triggers to keep the FTS index up to date.
     cursor.execute("""
     CREATE TRIGGER IF NOT EXISTS documents_ai AFTER INSERT ON documents BEGIN
+        INSERT INTO documents_fts(rowid, uri, title, body) VALUES (new.rowid, new.uri, new.title, new.body);
+    END;
+    """)
+
+    cursor.execute("""
+    CREATE TRIGGER IF NOT EXISTS documents_ad AFTER DELETE ON documents BEGIN
+        INSERT INTO documents_fts(documents_fts, rowid, uri, title, body) VALUES('delete', old.rowid, old.uri, old.title, old.body);
+    END;
+    """)
+
+    cursor.execute("""
+    CREATE TRIGGER IF NOT EXISTS documents_au AFTER UPDATE ON documents BEGIN
+        INSERT INTO documents_fts(documents_fts, rowid, uri, title, body) VALUES('delete', old.rowid, old.uri, old.title, old.body);
         INSERT INTO documents_fts(rowid, uri, title, body) VALUES (new.rowid, new.uri, new.title, new.body);
     END;
     """)

@@ -1,8 +1,3 @@
-from faker import Faker
-
-fake = Faker()
-
-
 def test_init_db_creates_required_tables(test_db):
     cursor = test_db.cursor()
     cursor.execute(
@@ -20,11 +15,11 @@ def test_init_db_creates_required_tables(test_db):
     assert documents_fts_table[0] == "documents_fts"
 
 
-def test_document_insertion_saves_correctly(test_db):
-    uri = fake.file_path(depth=3)
-    title = " ".join(fake.words())
-    body = "\n".join(fake.sentences())
-    hash = fake.sha256()
+def test_document_insertion_saves_correctly(faker, test_db):
+    uri = faker.file_path(depth=3)
+    title = " ".join(faker.words())
+    body = "\n".join(faker.sentences())
+    hash = faker.sha256()
 
     cursor = test_db.cursor()
     cursor.execute(
