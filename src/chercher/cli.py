@@ -49,10 +49,11 @@ def cli(ctx: click.Context) -> None:
 
 def _index(conn: sqlite3.Connection, uris: list[str], pm: pluggy.PluginManager) -> None:
     cursor = conn.cursor()
+    plugin_settings = dict(settings).get("plugin", {})
 
     for uri in uris:
         try:
-            for documents in pm.hook.ingest(uri=uri, settings=dict(settings)):
+            for documents in pm.hook.ingest(uri=uri, settings=plugin_settings):
                 for doc in documents:
                     try:
                         cursor.execute(
@@ -90,6 +91,47 @@ def index(ctx: click.Context, uris: list[str]) -> None:
         _index(conn, uris, pm)
 
 
+def _prune(conn: sqlite3.Connection, pm: pluggy.PluginManager) -> None:
+    cursor = conn.cursor()
+    plugin_settings = dict(settings).get("plugin", {})
+
+    try:
+        cursor.execute("SELECT uri, hash FROM documents")
+        uris_and_hashes = cursor.fetchall()
+    except Exception as e:
+        logger.error(
+            f"something went wrong while retrieving documents from the database: {e}"
+        )
+        return
+
+    for uri, hash in uris_and_hashes:
+        try:
+            for result in pm.hook.prune(uri=uri, hash=hash, settings=plugin_settings):
+                if not result:
+                    continue
+
+                try:
+                    cursor.execute("DELETE FROM documents WHERE uri = ?", (uri,))
+                    conn.commit()
+                    logger.info(f"document '{uri}' pruned")
+                except Exception as e:
+                    logger.error(f"something went wrong while purging '{uri}': {e}")
+        except Exception as e:
+            logger.error(
+                f"something went wrong while trying to purge document '{uri}': {e}"
+            )
+
+
+@cli.command(help="Prune unnecessary documents from the database.")
+@click.pass_context
+def prune(ctx: click.Context) -> None:
+    pm = ctx.obj["pm"]
+    db_url = ctx.obj["db_url"]
+
+    with db_connection(db_url) as conn:
+        _prune(conn, pm)
+
+
 @cli.command(help="Seach for documents matching your query.")
 @click.argument("query")
 @click.option(
@@ -107,7 +149,7 @@ def search(ctx: click.Context, query: str, limit: int) -> None:
         cursor = conn.cursor()
 
         sql_query = """
-            SELECT uri, substr(body, 0, 300)
+            SELECT uri, title, substr(body, 0, 300)
             FROM documents
             WHERE ROWID IN (
                 SELECT ROWID
@@ -126,9 +168,10 @@ def search(ctx: click.Context, query: str, limit: int) -> None:
             return
 
         for result in results:
-            console.print(f"[link={result[0]}]{result[0]}[/]")
+            console.print(f"[link={result[0]}][bold]{result[1]}[/]", highlight=False)
+            console.print(result[0])
             console.print(
-                f"{textwrap.shorten(result[1], width=280, placeholder='...')}\n",
+                f"{textwrap.shorten(result[2], width=280, placeholder='...')}\n",
                 highlight=False,
             )
 
