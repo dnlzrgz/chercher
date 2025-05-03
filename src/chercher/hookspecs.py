@@ -12,5 +12,5 @@ def ingest(uri: str, settings: dict) -> Generator[Document, None, None]:
 
 
 @hookspec
-def prune(uri: str, hash: str, settings: dict) -> bool | None:
+def prune(uri: str, settings: dict) -> bool | None:
     raise NotImplementedError
