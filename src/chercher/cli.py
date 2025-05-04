@@ -1,16 +1,14 @@
 import sys
 import sqlite3
-import textwrap
 import click
 from loguru import logger
 import pluggy
-from rich.console import Console
-from rich.table import Table
+from chercher.utils import console
+from chercher.output import print_plugins_table, print_results_list, print_results_table
 from chercher.plugin_manager import get_plugin_manager
 from chercher.settings import Settings, APP_NAME, APP_DIR
 from chercher.db import init_db, db_connection
 
-console = Console()
 
 logger.remove()
 logger.add(
@@ -60,7 +58,7 @@ def _index(conn: sqlite3.Connection, uris: list[str], pm: pluggy.PluginManager) 
                             """
                     INSERT INTO documents (uri, title, body, hash, metadata) VALUES (?, ?, ?, ?, ?)
                     """,
-                            (doc.uri, doc.title, doc.body, doc.hash, "{}"),
+                            (doc.uri, doc.title, doc.body, doc.hash, doc.metadata),
                         )
                         conn.commit()
                         logger.info(f'document "{doc.uri}" indexed')
@@ -141,8 +139,15 @@ def prune(ctx: click.Context) -> None:
     default=5,
     help="Number of results.",
 )
+@click.option(
+    "-o",
+    "--output",
+    type=click.Choice(["table", "list"], case_sensitive=False),
+    default="table",
+    help="Output format (available options: table and list).",
+)
 @click.pass_context
-def search(ctx: click.Context, query: str, limit: int) -> None:
+def search(ctx: click.Context, query: str, limit: int, output: str = "table") -> None:
     db_url = ctx.obj["db_url"]
 
     with db_connection(db_url) as conn:
@@ -167,30 +172,14 @@ def search(ctx: click.Context, query: str, limit: int) -> None:
             console.print(f"No results found for: '{query}'")
             return
 
-        for result in results:
-            console.print(f"[link={result[0]}][bold]{result[1]}[/]", highlight=False)
-            console.print(result[0])
-            console.print(
-                f"{textwrap.shorten(result[2], width=280, placeholder='...')}\n",
-                highlight=False,
-            )
+        if output == "list":
+            print_results_list(results)
+        else:
+            print_results_table(results)
 
 
 @cli.command(help="List out all the registered plugins and their hooks.")
 @click.pass_context
 def plugins(ctx: click.Context) -> None:
     pm = ctx.obj["pm"]
-    plugins = dict(pm.list_plugin_distinfo())
-
-    table = Table(title="plugins")
-    table.add_column("name")
-    table.add_column("version")
-    table.add_column("hooks")
-
-    for plugin, dist_info in plugins.items():
-        version = f"v{dist_info.version}" if dist_info else "n/a"
-        hooks = [h.name for h in pm.get_hookcallers(plugin)]
-        hooks_str = ", ".join(hooks)
-        table.add_row(plugin.__name__, version, hooks_str)
-
-    console.print(table)
+    print_plugins_table(pm)
