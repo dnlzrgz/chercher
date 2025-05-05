@@ -58,7 +58,13 @@ def _index(conn: sqlite3.Connection, uris: list[str], pm: pluggy.PluginManager) 
                             """
                     INSERT INTO documents (uri, title, body, hash, metadata) VALUES (?, ?, ?, ?, ?)
                     """,
-                            (doc.uri, doc.title, doc.body, doc.hash, doc.metadata),
+                            (
+                                doc.uri,
+                                doc.title,
+                                doc.body,
+                                doc.hash,
+                                doc.metadata.model_dump_json(),
+                            ),
                         )
                         conn.commit()
                         logger.info(f'document "{doc.uri}" indexed')
