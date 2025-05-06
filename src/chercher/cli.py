@@ -125,6 +125,15 @@ def _prune(conn: sqlite3.Connection, pm: pluggy.PluginManager) -> None:
                 f"something went wrong while trying to purge document '{uri}': {e}"
             )
 
+    try:
+        cursor.execute("VACUUM;")
+        logger.info("vacuum completed successfully")
+    except Exception as e:
+        logger.error(f"something went wrong while performing vacuum operation: {e}")
+        return
+
+    logger.info("database cleanup completed")
+
 
 @cli.command(help="Prune unnecessary documents from the database.")
 @click.pass_context
