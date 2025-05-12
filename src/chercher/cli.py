@@ -6,9 +6,10 @@ import pluggy
 from chercher.utils import console
 from chercher.output import print_plugins_table, print_results_list, print_results_table
 from chercher.plugin_manager import get_plugin_manager
-from chercher.settings import Settings, APP_NAME, APP_DIR
+from chercher.settings import Settings, APP_NAME, APP_DIR, CONFIG_FILE_PATH
 from chercher.db import init_db, db_connection
 
+# TODO: Add progress bar.
 
 logger.remove()
 logger.add(
@@ -198,3 +199,19 @@ def search(ctx: click.Context, query: str, limit: int, output: str = "table") ->
 def plugins(ctx: click.Context) -> None:
     pm = ctx.obj["pm"]
     print_plugins_table(pm)
+
+
+@cli.command(
+    help="Print the location of the configuration file or the database.",
+)
+@click.argument(
+    "item",
+    type=click.Choice(["config", "db"]),
+)
+def locate(item: str) -> None:
+    if item == "config":
+        console.print(
+            f"config file located at: [url={CONFIG_FILE_PATH.absolute()}]{CONFIG_FILE_PATH.absolute()}[/]"
+        )
+    elif item == "db":
+        console.print(f"db located at: [url={settings.db_url}]{settings.db_url}[/]")

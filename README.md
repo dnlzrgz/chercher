@@ -1,32 +1,45 @@
-# Chercher 🔍
+# 🔍 Chercher - My Universal Search Engine
 
-**Chercher** is a versatile and personal search engine that makes it easy to index and search all kinds of documents and webpages. Plus, if you want to add even more features, you can use its plugin system to expand what it can do.
+**Chercher** is my personal search engine for everything. It chews through PDFs, ebooks, YouTube videos, RSS feeds, and my own notes to help me rediscover anything I've seen, read, or written. Built on top of SQLite, it's designed to be fast enough for daily use and simple enough that I can extend it whenever I need to.
 
 ## Features
 
-1. **Plugins everywhere**: Enhance Chercher with a variety of plugins. If you can’t find what you need, creating a new plugin is a breeze!
-2. **Powered by SQLite's FTS5**: Chercher takes advantage of SQLite's Full-Text-Search (FTS5) for a fast and efficient searching across your content.
-3. **BM25 for relevant search results**: Get the most relevant search results with the BM25 ranking algorithm.
-4. **Progressive indexing**: Add documents and start searching immediately. No waiting required!
-5. **Easy to use CLI**: Interact with Chercher through a straightforward CLI.
+- **Pluggable architecture** that adapts to your needs:  
+  - Official plugins for [PDFs](https://github.com/dnlzrgz/chercher-plugin-pdf), [EPUBs](https://github.com/dnlzrgz/chercher-plugin-epub), [YouTube videos](https://github.com/dnlzrgz/chercher-plugin-yt) and [more](https://pypi.org/search/?q=chercher-plugin)
+- **Building your own plugins is minutes**:
+  - Starter template with [Cookiecutter](https://github.com/dnlzrgz/chercher-plugin)
+  - Simple Python interface (just implemented the methods you want.)
+
+- **BM25-powered search at SQLite speed**:
+  - Industry-standard ranking algorithm
+  - Supports advanced query operators
+- **Progressive indexing**:
+  - Files become searchable immediately
+  - No full-rebuilds required
+  - Stop and resume anytime
+  - Handles incremental updates gracefully
+- **Terminal-native workflow**:
+  - Easy-to-use CLI with intuitive commands
+  - Structured output for quick scanning
+  - Pipe-friendly for power users (WIP)
+- **And more coming soon**:
+  - Modern TUI (WIP)
+  - Auto-suggestion engine (WIP)
+  - Granular search filters (WIP)
+  - Hook for incremental updates (WIP)
 
 ## Motivation
 
-Building my own personal search engine has been a dream of mine for a while, but I had a tough time creating something I was really happy with. Almost a year ago, I took my first shot at it with [winzig](https://github.com/dnlzrgz/winzig), but after some ups and downs, I decided to switch gears and try again with [housaku](https://github.com/dnlzrgz/housaku). I got a bit too ambitious, and with life getting in the way, I eventually had to put the project on hold.
+Building my own personal search engine has been a recurring project that never quite stuck. My first attempt, [winzig](https://github.com/dnlzrgz/winzing), taught me about the basics but felt too rigid. Then [housaku](https://github.com/dnlzrgz/housaku) became an over-engineered lesson in scope creep. But with each iteration, I learned what really matters for me and a great deal about search engines in general.
 
-Luckily for me I learned a lot about how search engines work, the ins and outs of some ranking algorithms, and the best practices to follow (and the pitfalls to avoid).
+Chercher is the distillation of those lessons.
 
-## Installing
+## Installion
 
 > [!NOTE]
 > TODO
 
 ## Usage
-
-> [!NOTE]
-> TODO
-
-## Plugins
 
 > [!NOTE]
 > TODO
