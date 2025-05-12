@@ -1,6 +1,7 @@
 import textwrap
 from pluggy import PluginManager
 from rich.table import Table
+from rich.progress import track
 from chercher.utils import console
 
 
@@ -51,10 +52,11 @@ def print_plugins_table(pm: PluginManager) -> None:
     table.add_column("hooks")
 
     plugins = dict(pm.list_plugin_distinfo())
-    for plugin, dist_info in plugins.items():
+    for plugin, dist_info in track(plugins.items(), description="checking plugins..."):
         version = f"v{dist_info.version}" if dist_info else "n/a"
         hooks = [h.name for h in pm.get_hookcallers(plugin)]
         hooks_str = ", ".join(hooks) if hooks else ""
         table.add_row(plugin.__name__, version, hooks_str)
 
+    console.clear()
     console.print(table)

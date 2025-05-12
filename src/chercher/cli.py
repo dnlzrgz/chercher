@@ -9,8 +9,6 @@ from chercher.plugin_manager import get_plugin_manager
 from chercher.settings import Settings, APP_NAME, APP_DIR, CONFIG_FILE_PATH
 from chercher.db import init_db, db_connection
 
-# TODO: Add progress bar.
-
 logger.remove()
 logger.add(
     sys.stderr,
