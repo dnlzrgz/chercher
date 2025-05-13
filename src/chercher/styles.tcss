@@ -1,0 +1,82 @@
+.header {
+  layout: horizontal;
+  height: auto;
+  padding: 1;
+
+  .title {
+    color: $accent;
+    text-style: bold;
+  }
+
+  .version {
+    color: $accent-muted;
+    margin-left: 1;
+  }
+
+  .path {
+    color: $foreground-muted;
+    dock: right;
+  }
+}
+
+.search-bar {
+  layout: grid;
+  grid-columns: 1fr 12 12;
+  grid-size: 3 1;
+  padding: 0 1;
+  height: 2;
+
+  .input, .submit {
+    background: $boost;
+    border: none;
+    height: 1;
+    padding: 0 1;
+  }
+
+  .input:focus {
+    background: $surface;
+    border-left: outer $accent;
+    color: $foreground;
+    padding-left: 0;
+  }
+  
+  .submit {
+    background: $accent-muted;
+    color: $accent;
+  }
+}
+
+.results {
+  border-title-align: left;
+  border: round $accent-muted;
+  background: $background;
+  height: 1fr;
+  margin: 0 1;
+
+  scrollbar-color: $accent-muted;
+  scrollbar-color-hover: $accent;
+  scrollbar-color-active: $accent;
+  scrollbar-background: $background;
+  scrollbar-background-hover: $background;
+  scrollbar-background-active: $background;
+  scrollbar-size-vertical: 1;
+
+  .result {
+    padding: 0 1;
+
+    &.-highlight {
+      background: $accent-muted;
+      border-left: outer $accent;
+      color: $accent;
+      padding-left: 0;
+    }
+  }
+
+  &:focus {
+    border: round $accent;
+  }
+}
+
+Footer {
+  background: transparent;
+}

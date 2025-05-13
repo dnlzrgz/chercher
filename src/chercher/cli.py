@@ -9,6 +9,7 @@ from chercher.utils import console
 from chercher.output import print_plugins_table, print_results_list, print_results_table
 from chercher.plugin_manager import get_plugin_manager
 from chercher.settings import Settings, APP_NAME, APP_DIR, CONFIG_FILE_PATH
+from chercher.app import ChercherApp
 from chercher.db import init_db, db_connection
 
 logger.remove()
@@ -225,6 +226,14 @@ def locate(item: str) -> None:
         )
     elif item == "db":
         console.print(f"db located at: [url={settings.db_url}]{settings.db_url}[/]")
+
+
+@cli.command(
+    help="Starts the TUI.",
+)
+def app() -> None:
+    app = ChercherApp()
+    app.run()
 
 
 if __name__ == "__main__":
