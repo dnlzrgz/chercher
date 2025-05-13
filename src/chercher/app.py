@@ -22,12 +22,12 @@ settings = Settings()
 # TODO: signal input errors.
 # TODO: enter to open link.
 # TODO: improve tab navigation (?).
-# TODO: add theming.
 # TODO: add loading indicator.
 
 
 class ChercherApp(App):
     TITLE = APP_NAME
+    ENABLE_COMMAND_PALETTE = False
     BINDINGS = [
         ("ctrl+q", "quit", "quit"),
     ]
@@ -36,6 +36,10 @@ class ChercherApp(App):
 
     search_query: reactive[str] = reactive("")
     n_results: reactive[int] = reactive(10)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.theme = settings.theme
 
     def compose(self) -> ComposeResult:
         with Container(classes="header"):
@@ -86,7 +90,7 @@ class ChercherApp(App):
         with db_connection(settings.db_url) as conn:
             cursor = conn.cursor()
             sql_query = """
-                    SELECT uri, title, substr(body, 0, 300)
+                    SELECT uri, title
                     FROM documents
                     WHERE ROWID IN (
                         SELECT ROWID

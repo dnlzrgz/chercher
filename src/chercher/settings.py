@@ -19,6 +19,8 @@ class Settings(BaseSettings):
     description: str = "Chercher, the universal and personal search engine."
     version: str = version(APP_NAME)
 
+    theme: str = "dracula"
+
     db_url: str = f"{APP_DIR}/db.sqlite3"
 
     model_config = SettingsConfigDict(
