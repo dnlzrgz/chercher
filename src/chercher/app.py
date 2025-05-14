@@ -15,6 +15,7 @@ from textual.validation import Number
 from textual.reactive import reactive
 from chercher.settings import APP_NAME, APP_DIR, Settings
 from chercher.db import db_connection
+from chercher.db_actions import search
 
 settings = Settings()
 
@@ -80,7 +81,7 @@ class ChercherApp(App):
 
     @on(Input.Submitted)
     @on(Button.Pressed)
-    def search(self) -> None:
+    def submit(self) -> None:
         if not self.search_query:
             return
 
@@ -88,21 +89,7 @@ class ChercherApp(App):
         results_list.clear()
 
         with db_connection(settings.db_url) as conn:
-            cursor = conn.cursor()
-            sql_query = """
-                    SELECT uri, title
-                    FROM documents
-                    WHERE ROWID IN (
-                        SELECT ROWID
-                        FROM documents_fts
-                        WHERE documents_fts MATCH ?
-                        ORDER BY bm25(documents_fts)
-                        LIMIT ?
-                    )
-                    """
-
-            cursor.execute(sql_query, (self.search_query, self.n_results))
-            results = cursor.fetchall()
+            results = search(conn, self.search_query, self.n_results)
             if not results:
                 self.notify("no results found")
                 return
