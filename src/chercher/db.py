@@ -19,6 +19,15 @@ def init_db(conn: sqlite3.Connection) -> None:
     );
     """)
 
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS history (
+        query TEXT UNIQUE NOT NULL,
+
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        last_updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    );
+    """)
+
     # Create virtual FTS5 table based on the documents table.
     cursor.execute("""
     CREATE VIRTUAL TABLE IF NOT EXISTS documents_fts USING fts5 (
@@ -28,6 +37,19 @@ def init_db(conn: sqlite3.Connection) -> None:
         content=documents,
         tokenize="porter unicode61 remove_diacritics 1"
     );
+    """)
+
+    # Create index for the history table.
+    cursor.execute("""
+    CREATE INDEX IF NOT EXISTS idx_history_query ON history(query);
+    """)
+
+    cursor.execute("""
+    CREATE INDEX IF NOT EXISTS idx_history_created_at ON history(created_at);
+    """)
+
+    cursor.execute("""
+    CREATE INDEX IF NOT EXISTS idx_history_updated_at ON history(last_updated_at);
     """)
 
     # Create triggers to keep the FTS index up to date.

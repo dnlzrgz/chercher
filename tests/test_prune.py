@@ -1,4 +1,4 @@
-from src.chercher.cli import _prune
+from src.chercher.db_actions import prune
 from .plugin_mocks import BadPlugin, DummyTxtPlugin
 
 
@@ -22,7 +22,7 @@ def test_prune_removes_correct_document(faker, test_db, plugin_manager):
     assert len(documents) == 2
 
     plugin_manager.register(DummyTxtPlugin())
-    _prune(test_db, plugin_manager)
+    prune(test_db, plugin_manager)
 
     cursor.execute("SELECT * FROM documents")
     documents = cursor.fetchall()
@@ -44,7 +44,7 @@ def test_prune_removes_correctly_all_document(faker, test_db, plugin_manager):
     assert len(documents) == 3
 
     plugin_manager.register(DummyTxtPlugin())
-    _prune(test_db, plugin_manager)
+    prune(test_db, plugin_manager)
 
     cursor.execute("SELECT * FROM documents")
     documents = cursor.fetchall()
@@ -74,7 +74,7 @@ def test_purge_with_exception(faker, test_db, plugin_manager):
 
     plugin_manager.register(BadPlugin())
     plugin_manager.register(DummyTxtPlugin())
-    _prune(test_db, plugin_manager)
+    prune(test_db, plugin_manager)
 
     cursor.execute("SELECT * FROM documents")
     documents = cursor.fetchall()

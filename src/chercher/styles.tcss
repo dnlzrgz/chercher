@@ -46,12 +46,21 @@
   }
 }
 
-.results {
-  border-title-align: left;
+.main {
+  layout: grid;
+  grid-size: 2 1;
+  grid-rows: 1fr;
+  grid-columns: 1fr 3fr;
+  height: 1fr;
+}
+
+.results,
+.history {
+  margin: 0 1;
+  border-title-align: right;
   border: round $accent-muted;
   background: $background;
   height: 1fr;
-  margin: 0 1;
 
   scrollbar-color: $accent-muted;
   scrollbar-color-hover: $accent;
@@ -61,6 +70,12 @@
   scrollbar-background-active: $background;
   scrollbar-size-vertical: 1;
 
+  &:focus {
+    border: round $accent;
+  }
+}
+
+.results {
   .result {
     padding: 0 1;
 
@@ -71,9 +86,23 @@
       padding-left: 0;
     }
   }
+}
 
-  &:focus {
-    border: round $accent;
+.history {
+  .tree--guides {
+    color: $accent-muted;
+  }
+
+  .tree--guides-hover,
+  .tree--guides-selected {
+    color: $accent;
+  }
+
+  .tree--cursor,
+  .tree--highlight {
+    background: $accent-muted;
+    color: $accent;
+    text-style: bold;
   }
 }
 

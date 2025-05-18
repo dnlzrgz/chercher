@@ -1,11 +1,11 @@
-from src.chercher.cli import _index
+from src.chercher.db_actions import index
 from .plugin_mocks import DummyTxtPlugin, BadPlugin
 
 
 def test_index_valid_txt(faker, test_db, plugin_manager):
     plugin_manager.register(DummyTxtPlugin())
     uri = faker.file_path(extension="txt")
-    _index(test_db, [uri], plugin_manager)
+    index(test_db, [uri], plugin_manager)
 
     cursor = test_db.cursor()
     cursor.execute("SELECT * FROM documents")
@@ -27,7 +27,7 @@ def test_index_with_exception(faker, test_db, plugin_manager):
         faker.file_path(depth=3, extension="epub"),
     ]
 
-    _index(test_db, uris, plugin_manager)
+    index(test_db, uris, plugin_manager)
 
     cursor = test_db.cursor()
     cursor.execute("SELECT * FROM documents")
@@ -40,7 +40,7 @@ def test_index_same_document_multiple_times(faker, test_db, plugin_manager):
     plugin_manager.register(DummyTxtPlugin())
     uri = faker.file_path(depth=3, extension="txt")
 
-    _index(test_db, [uri, uri], plugin_manager)
+    index(test_db, [uri, uri], plugin_manager)
 
     cursor = test_db.cursor()
     cursor.execute("SELECT * FROM documents WHERE uri = ?", (uri,))

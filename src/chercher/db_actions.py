@@ -90,7 +90,19 @@ def prune(conn: sqlite3.Connection, pm: pluggy.PluginManager) -> None:
 
 def search(conn: sqlite3.Connection, query: str, limit: int) -> list[Any] | None:
     cursor = conn.cursor()
-    sql_query = """
+
+    cursor.execute(
+        """
+            INSERT INTO history (query, created_at, last_updated_at)
+            VALUES (?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+            ON CONFLICT(query) DO UPDATE SET
+            last_updated_at = CURRENT_TIMESTAMP;
+        """,
+        (query,),
+    )
+
+    cursor.execute(
+        """
             SELECT uri, title, substr(body, 0, 300)
             FROM documents
             WHERE ROWID IN (
@@ -100,8 +112,26 @@ def search(conn: sqlite3.Connection, query: str, limit: int) -> list[Any] | None
                 ORDER BY bm25(documents_fts)
                 LIMIT ?
             )
-            """
+            """,
+        (query, limit),
+    )
+    results = cursor.fetchall()
+    return results
 
-    cursor.execute(sql_query, (query, limit))
+
+def load_history(conn: sqlite3.Connection, limit: int = 1_000) -> list[Any] | None:
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        SELECT DATE(last_updated_at) AS date, GROUP_CONCAT(query) AS queries
+        FROM history
+        GROUP BY date
+        ORDER BY date DESC
+        LIMIT ?;
+        """,
+        (limit,),
+    )
+
     results = cursor.fetchall()
     return results
